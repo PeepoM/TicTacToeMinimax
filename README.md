@@ -7,3 +7,8 @@ You can read further about the Minimax algorithm as well as the MVC design patte
 Minimax: https://en.wikipedia.org/wiki/Minimax
 
 MVC: https://en.wikipedia.org/wiki/Model–view–controller
+
+# Update 22/4/2022
+Improved the AI's runtime by implementing an enhanced version of Minimax with Alpha-Beta pruning. An improvement of roughly 60ms on the first AI's move has been measured. 
+
+Minimax with Alpha-Beta pruning: https://en.wikipedia.org/wiki/Alpha–beta_pruning
