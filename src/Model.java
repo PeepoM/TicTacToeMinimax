@@ -7,6 +7,7 @@ public class Model {
 
     public final char COMPUTER = 'C';
     public final char PLAYER = 'X';
+    public final char BLANK = ' ';
 
     private final char[][] board;
 
@@ -21,7 +22,7 @@ public class Model {
         int row = (move - 1) / nrCols;
         int col = (move - 1) % nrCols;
 
-        return move >= 1 && move <= (nrRows * nrCols) && board[row][col] == ' ';
+        return move >= 1 && move <= (nrRows * nrCols) && board[row][col] == BLANK;
     }
 
     public void playerMove(int move) {
@@ -37,10 +38,10 @@ public class Model {
 
         for (int row = 0; row < nrRows; row++) {
             for (int col = 0; col < nrCols; col++) {
-                if (board[row][col] == ' ') {
+                if (board[row][col] == BLANK) {
                     board[row][col] = COMPUTER;
-                    int score = minimax(board, 0, false);
-                    board[row][col] = ' ';
+                    int score = minimax(board, false);
+                    board[row][col] = BLANK;
 
                     if (score > bestMove) {
                         bestMove = score;
@@ -54,14 +55,13 @@ public class Model {
         board[bestRow][bestCol] = COMPUTER;
     }
 
-    private int minimax(char[][] board, int depth, boolean maximizingPlayer) {
-        if (isAWin(COMPUTER, board)) {
-            return 10 - depth;
-        } else if (isAWin(PLAYER, board)) {
-            return -10 + depth;
-        } else if (isADraw(COMPUTER, board) || isADraw(PLAYER, board)) {
+    private int minimax(char[][] board, boolean maximizingPlayer) {
+        if (isAWin(COMPUTER, board))
+            return 1;
+        else if (isAWin(PLAYER, board))
+            return -1;
+        else if (isBoardFull(board))
             return 0;
-        }
 
         int value;
 
@@ -70,10 +70,10 @@ public class Model {
 
             for (int row = 0; row < nrRows; row++) {
                 for (int col = 0; col < nrCols; col++) {
-                    if (board[row][col] == ' ') {
+                    if (board[row][col] == BLANK) {
                         board[row][col] = COMPUTER;
-                        value = Math.max(value, minimax(board, depth + 1, false));
-                        board[row][col] = ' ';
+                        value = Math.max(value, minimax(board, false));
+                        board[row][col] = BLANK;
                     }
                 }
             }
@@ -82,10 +82,10 @@ public class Model {
 
             for (int row = 0; row < nrRows; row++) {
                 for (int col = 0; col < nrCols; col++) {
-                    if (board[row][col] == ' ') {
+                    if (board[row][col] == BLANK) {
                         board[row][col] = PLAYER;
-                        value = Math.min(value, minimax(board, depth + 1, true));
-                        board[row][col] = ' ';
+                        value = Math.min(value, minimax(board, true));
+                        board[row][col] = BLANK;
                     }
                 }
             }
@@ -97,7 +97,7 @@ public class Model {
         // Check if the board is full
         for (char[] row : board) {
             for (char piece : row) {
-                if (piece == ' ') {
+                if (piece == BLANK) {
                     return false;
                 }
             }
@@ -137,7 +137,7 @@ public class Model {
             strCol = "";
         }
 
-        //Check diagonals for win
+        // Check diagonals for win
         if (board[0][0] == turn && board[1][1] == turn && board[2][2] == turn)
             return true;
 
@@ -170,7 +170,7 @@ public class Model {
     public void resetBoard(char[][] board) {
         for (int row = 0; row < nrRows; row++) {
             for (int col = 0; col < nrCols; col++) {
-                board[row][col] = ' ';
+                board[row][col] = BLANK;
             }
         }
     }
