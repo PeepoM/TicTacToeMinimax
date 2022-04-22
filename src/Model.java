@@ -40,7 +40,13 @@ public class Model {
             for (int col = 0; col < nrCols; col++) {
                 if (board[row][col] == BLANK) {
                     board[row][col] = COMPUTER;
-                    int score = minimax(board, false);
+
+                    int score = minimax(
+                            board,
+                            false,
+                            Integer.MIN_VALUE,
+                            Integer.MAX_VALUE);
+
                     board[row][col] = BLANK;
 
                     if (score > bestMove) {
@@ -55,7 +61,7 @@ public class Model {
         board[bestRow][bestCol] = COMPUTER;
     }
 
-    private int minimax(char[][] board, boolean maximizingPlayer) {
+    private int minimax(char[][] board, boolean maximizingPlayer, int alpha, int beta) {
         if (isAWin(COMPUTER, board))
             return 1;
         else if (isAWin(PLAYER, board))
@@ -72,8 +78,14 @@ public class Model {
                 for (int col = 0; col < nrCols; col++) {
                     if (board[row][col] == BLANK) {
                         board[row][col] = COMPUTER;
-                        value = Math.max(value, minimax(board, false));
+
+                        value = Math.max(value, minimax(board, false, alpha, beta));
+
                         board[row][col] = BLANK;
+
+                        if (value >= beta)
+                            return value;
+                        alpha = Math.max(alpha, value);
                     }
                 }
             }
@@ -84,8 +96,14 @@ public class Model {
                 for (int col = 0; col < nrCols; col++) {
                     if (board[row][col] == BLANK) {
                         board[row][col] = PLAYER;
-                        value = Math.min(value, minimax(board, true));
+
+                        value = Math.min(value, minimax(board, true, alpha, beta));
+
                         board[row][col] = BLANK;
+
+                        if (value <= alpha)
+                            return value;
+                        beta = Math.min(beta, value);
                     }
                 }
             }
@@ -95,13 +113,10 @@ public class Model {
 
     public boolean isBoardFull(char[][] board) {
         // Check if the board is full
-        for (char[] row : board) {
-            for (char piece : row) {
-                if (piece == BLANK) {
+        for (char[] row : board)
+            for (char piece : row)
+                if (piece == BLANK)
                     return false;
-                }
-            }
-        }
 
         return true;
     }
